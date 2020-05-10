@@ -26,7 +26,11 @@ const DeckSchema = new mongoose.Schema({
             type: String,
             required: true
         }
-    }]
+    }],
+    cardCount: {
+        type: Number,
+        required: true
+    }
 })
 
 module.exports = Deck = mongoose.model('deck', DeckSchema);

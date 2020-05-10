@@ -24,7 +24,7 @@ const {
   })
 
   //@route POST api/deck
-  //@desc Create new deck and add to creator's deck
+  //@desc Create new deck and add to creator's collection
   //@access Private
   router.post(
       "/",
@@ -59,11 +59,11 @@ const {
                   })
               } else {
                   //add deck to deck collection
-                  deck = new Deck({ title, description, creator });
+                  deck = new Deck({ title, description, creator, cardCount : 0 });
                   await deck.save();
 
                   //add deck id to user's deck 
-                  User.findByIdAndUpdate(creator, { $push: { decks: deck.id } }, (err) => {
+                  User.findByIdAndUpdate(creator, { $push: { decks: deck.id }, $inc : { deckCount: 1} }, (err) => {
                       if (err) {
                           throw err;
                       }
@@ -108,13 +108,17 @@ router.patch("/user/:deck_id", auth, async(req, res) => {
         if (check.length !== 0) {
             return res.status(400).json({ msg: "Deck has already been added"})
         } else {
+            // find user then push deck into array and return new data
             const user = await User.findByIdAndUpdate(
                 req.user.id,
-                { $push: { decks: req.params.deck_id } },
+                { $push: { decks: req.params.deck_id }, $inc : { deckCount: 1 } },
                 { new: true }
             );
+            // user.decks.unshift(req.params.deck_id);
+            await user.save();
+
             if (!user) {
-                return res.status(400).json({ msg: "Deck not found" });
+                return res.status(400).json({ msg: "User not found" });
             }
             res.json(user);
         }
@@ -126,11 +130,104 @@ router.patch("/user/:deck_id", auth, async(req, res) => {
 })
 
 //@route Delete api/deck/user/:deck_id
-//@desc Remove deck from user collection
+//@desc Remove one deck from user collection
 //@access Private
+router.delete("/user/:deck_id", auth, async(req, res) => {
+    try {
+        //check if deck exists in user
+        const user = await User.findById(req.user.id);
+        const check = user.decks.filter(deck => deck._id == req.params.deck_id);
+        if (check.length == 0 || !user) {
+            return res.status(400).json({ msg: "Deck does not exists"})
+        } else {
+            //Get remove index
+            // const removeIndex = user.decks.indexOf(req.params.deck_id);
+            // user.decks.splice(removeIndex, 1);
+            // user.updateOne({$inc: {deckCount: -1}});
+            const result = await User.findByIdAndUpdate(
+                req.user.id,
+                {  $pull : { decks: req.params.deck_id}, $inc : { deckCount: -1} },
+                {new: true}
+            )
+            await result.save();
+
+            res.json(result);
+        }
+    } catch(err) {
+        console.error(err.message);
+        res.status(500).send("Server error");
+    }
+})
+
+
+//@route Delete api/deck/user
+//@desc Remove all deck from user collection
+//@access Private
+router.delete("/user", auth, async(req, res) => {
+    try {
+        //check if user exists or deck is already empty
+        const user = await User.findById(req.user.id);
+        if (!user) {
+            return res.status(400).json({ msg: "User does not exists"})
+        } else if (user.decks.length == 0 ) {
+            return res.status(400).json({ msg: "Deck is already empty"});
+        }
+            //Empty user decks array
+        user.decks = [];
+        user.deckCount = 0;
+        await user.save();
+        res.json(user);
+    } catch(err) {
+        console.error(err.message);
+        res.status(500).send("Server error");
+    }
+})
 
 //@route Delete api/deck
-//@desc Remove deck from global collection
+//@desc Remove all user's decks from global collection
+//@access Private
+router.delete("/", auth, async (req, res) => {
+    try {
+        await Deck.deleteMany({ creator: req.user.id });
+        res.json({
+            msg: "All creator's decks deleted"
+        })
+    } catch(err) {
+        console.error(err.message);
+        res.status(500).send("Server Error");
+    }
+})
+
+//@route Delete api/deck/:deck_id
+//@desc Remove one user's deck from global collection
+//@access Private
+router.delete("/:deck_id", auth, async(req, res) => {
+    try {
+        //check if user exists or deck is already empty
+        const deck = await Deck.findById(req.params.deck_id);
+        if (!deck) {
+            return res.status(404).json({
+                msg: "Deck not found"
+            })
+        }
+        //check if user deleting deck is the deck's creator
+        if (deck.creator.toString() !== req.user.id.toString()) {
+            return res.status(401).json({
+                msg: "User is not authorized to delete deck"
+            })
+        }
+        await deck.remove();
+        res.json({
+            msg: "Creator's deck deleted"
+        })
+    } catch(err) {
+        console.error(err.message);
+        res.status(500).send("Server error");
+    }
+})
+
+//@route PATCH api/deck/:deck_id
+//@desc Edit the deck title or description
 //@access Private
 
 module.exports = router;

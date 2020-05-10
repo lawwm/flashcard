@@ -17,7 +17,11 @@ const UserSchema = new mongoose.Schema({
     decks: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: "deck"
-    }]
+    }],
+    deckCount: {
+        type: Number,
+        required: true
+    }
 })
 
 module.exports = User = mongoose.model('user', UserSchema);

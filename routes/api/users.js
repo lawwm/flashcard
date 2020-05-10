@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const bcrypt = require("bcryptjs");
+const auth = require("../../middleware/auth.js");
 const jwt = require("jsonwebtoken");
 const config = require("config");
 const {
@@ -37,8 +38,8 @@ router.post('/', [
                     errors: [{msg: "User already exists"}]
                 });
             }
-
-            user = new User({name, email, password});
+            
+            user = new User({name, email, password, deckCount: 0 });
 
             // encrypt password
             const salt = await bcrypt.genSalt(10);
@@ -69,5 +70,41 @@ router.post('/', [
             res.status(500).send("Server Error");
         }
     })
+
+//@route Delete api/users
+//@desc Remove User profile
+//@access Private
+router.delete("/", auth, async (req, res) => {
+    try {
+        const user = await User.findById({ _id: req.user.id});
+        if (!user) {
+            return res.status(400).json({
+                msg: "User does not exist"
+            })
+        }
+        await User.findOneAndRemove({
+            _id: req.user.id
+        })
+        res.json({
+            msg: "User deleted"
+        })
+    } catch(err) {
+        console.error(err.message);
+        res.status(500).send("Server Error");
+    }
+})
+
+//@route Get api/users
+//@desc Get all the user profiles sorted from most deck to least decks
+//@access Private
+router.get("/", auth, async(req, res) => {
+    try {
+        const users = await User.find().sort({ "deckCount" : -1 });
+        res.json(users);
+    } catch(err) {
+        console.error(err.message);
+        res.status(500).send("Server Error");
+    }
+})
 
 module.exports = router;
