@@ -7,21 +7,24 @@ const {
     validationResult
   } = require("express-validator");
 
-  const Deck = require("../../models/Deck.js");
-  const User = require("../../models/User.js");
+const Deck = require("../../models/Deck.js");
+const User = require("../../models/User.js");
+const paginatedResults = require("../../middleware/pagination.js");
 
-  //@route GET api/deck
-  //@desc get all decks
+  //@route GET api/deck?page=1&limit=10
+  //@desc get all decks paginated
   //@access Private
-  router.get("/", auth, async (req, res) => {
+  router.get("/", [ auth, paginatedResults(Deck)], async (req, res) => {
     try {
-        const decks = await Deck.find();
-        res.json(decks);
+        res.json(res.paginatedResults);
+        // const decks = await Deck.find();
+        // res.json(decks);
     } catch(err) {
         console.error(err.message);
         res.status(500).send("Server error");
     }
   })
+
 
   //@route POST api/deck
   //@desc Create new deck and add to creator's collection
@@ -82,13 +85,22 @@ const {
   //@route GET api/deck/user/:user_id
   //@desc get user's decks
   //@access Private
-  router.get("/user/:user_id", auth, async(req, res) => {
+  router.get("/user/:user_id", [auth], async(req, res) => {
       try {
+        // const decks = await User.findById(req.params.user_id).populate("decks");
+        // if (!decks) {
+        //     return res.status(400).json({ msg: "User not found" });
+        // }
+        const page = parseInt(req.query.page);
+        const limit = parseInt(req.query.limit);
+        const results = {};
+        const startIndex = (page - 1) * limit
+        const endIndex = page * limit
         const decks = await User.findById(req.params.user_id).populate("decks");
-        if (!decks) {
-            return res.status(400).json({ msg: "User not found" });
-        }
-        res.json(decks);
+        results.decks = decks.decks.slice(startIndex, endIndex);
+        results.totalRecords = decks.decks.length;
+        res.json(results);
+
       } catch(err) {
           console.error(err.message);
           res.status(500).send("Server Error");

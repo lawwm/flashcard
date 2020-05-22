@@ -1,0 +1,94 @@
+/*Alerts*/
+.alert {
+    padding: 0.8rem;
+    margin: 1rem 0;
+    opacity: 0.9;
+    background: var(--light-color);
+    color: #333;
+  }
+  
+  .alert-primary {
+    background: var(--primary-color);
+    color: #fff;
+  }
+  
+  .alert-light {
+    background: var(--light-color);
+    color: #333;
+  }
+  
+  .alert-dark {
+    background: var(--dark-color);
+    color: #fff;
+  }
+  
+  .alert-danger {
+    background: var(--danger-color);
+    color: #fff;
+  }
+  
+  .alert-success {
+    background: var(--success-color);
+    color: #fff;
+  }
+  
+  .alert-white {
+    background: #fff;
+    color: #333;
+    border: #ccc solid 1px;
+  }
+
+ /* elements */
+body {
+  background-color: #edeae5;
+  background-image: url("https://www.transparenttextures.com/patterns/inspiration-geometry.png");
+}
+
+a {
+  color: #f0ad4e;
+}
+
+a:hover {
+  color: #af6908;
+}
+
+/* Navbar */
+
+.custom-navbar {
+  font-family: 'Roboto', sans-serif;
+  font-size: 1.2rem;
+  padding-left: 4rem;
+  padding-right: 4rem;
+} 
+
+.nav-logo {
+  font-family: 'Roboto', sans-serif;
+  font-weight: bold;
+  font-size: 2rem;
+}
+
+/* Login */
+/* Register */
+.auth-page {
+  margin-top: 7rem;
+  font-family: 'Roboto', sans-serif;
+}
+
+.whiz-kit-logo {
+  margin-bottom: 0.6rem;
+  padding-right: 1.4rem;
+  font-family: 'Roboto', sans-serif;
+  font-weight: bold;
+  font-size: 2.5rem;
+}
+
+.auth-reminder {
+  text-align: center;
+  padding-right: 1rem;
+  margin-top: 0.5rem;
+}
+
+/* Dashboard */
+.dashboard-header {
+  margin-top: 1rem;
+}
