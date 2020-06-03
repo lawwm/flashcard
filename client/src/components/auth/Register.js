@@ -10,6 +10,7 @@ import {connect} from 'react-redux';
 import { setAlert } from "../../actions/alert";
 import InputGroup from 'react-bootstrap/InputGroup';
 
+
 const Register = ({ setAlert, register, isAuthenticated }) => {
     const [formData, setFormData] = useState({
         name: '',

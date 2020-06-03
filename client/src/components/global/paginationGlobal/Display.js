@@ -1,18 +1,12 @@
 //Main component
-import React, { useState, useEffect, Fragment } from "react";
-import axios from 'axios';
-import Pagination from 'react-bootstrap/Pagination';
+import React, {  useEffect, Fragment } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { getPage } from "../../../actions/display";
 import Deck from "./Deck";
 import Limit from "./Limit";
 import Paginate from "./Pagination";
-import Card from 'react-bootstrap/Card';
-import CardDeck from 'react-bootstrap/CardDeck';
 import CardColumns from 'react-bootstrap/CardColumns';
-import Container from 'react-bootstrap/Container';
-import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 
 const Display = ({ currentDecks, getPage, limit, neighbour, user_id }) => {
@@ -22,32 +16,33 @@ const Display = ({ currentDecks, getPage, limit, neighbour, user_id }) => {
 
   return (
     <Fragment>
-      <Col md={{span: 4, offset: 1}}>
+      <Col md={12}>
+        <hr />
+        <CardColumns>
+          {currentDecks.map((deck, index) =>
+            <Deck
+              key={deck._id}
+              index={index}
+              title={deck.title}
+              description={deck.description}
+              cardCount={deck.cardCount}
+              deckId={deck._id}
+              creatorId={deck.creator}
+              userId={user_id}
+            />
+          )}
+        </CardColumns>
+        <hr />
+      </Col>
+
+      <Col className="justify-content-center margin-page" lg={{ span: 7, offset: 1 }}>
         <Paginate />
       </Col>
-      <Col  md={{span: 4, offset: 3}}>
+      <Col className="margin-page" lg={4}>
         <Limit />
       </Col>
-      
-      <Col md={12}>
-        <CardColumns>
-        {currentDecks.map((deck, index) =>
-          <Deck
-            key={index}
-            title={deck.title}
-            description={deck.description}
-            cardCount={deck.cardCount}
-            deckId={deck._id}
-            creatorId={deck.creator}
-            userId={user_id}
-          />
-        )}
-      </CardColumns>
-      </Col>
-      
-    </Fragment>
 
-    
+    </Fragment>
   );
 };
 

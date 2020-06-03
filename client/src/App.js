@@ -12,8 +12,6 @@ import { Provider } from "react-redux";
 import store from "./store";
 import setAuthToken from "./utils/setAuthToken";
 
-// import './App.css';
-
 const App = () => {
     useEffect(() => {
         setAuthToken(localStorage.token);

@@ -107,7 +107,7 @@ const paginatedResults = require("../../middleware/pagination.js");
       }
   })
 
-
+  //2nd task
   //@route PATCH api/deck/user/:deck_id
   //@desc Add deck to user collection
   //@access Private
@@ -141,6 +141,7 @@ router.patch("/user/:deck_id", auth, async(req, res) => {
     }
 })
 
+//3rd task
 //@route Delete api/deck/user/:deck_id
 //@desc Remove one deck from user collection
 //@access Private
@@ -171,7 +172,7 @@ router.delete("/user/:deck_id", auth, async(req, res) => {
     }
 })
 
-
+//task 4
 //@route Delete api/deck/user
 //@desc Remove all deck from user collection
 //@access Private
@@ -184,7 +185,7 @@ router.delete("/user", auth, async(req, res) => {
         } else if (user.decks.length == 0 ) {
             return res.status(400).json({ msg: "Deck is already empty"});
         }
-            //Empty user decks array
+        //Empty user decks array
         user.decks = [];
         user.deckCount = 0;
         await user.save();
@@ -195,6 +196,7 @@ router.delete("/user", auth, async(req, res) => {
     }
 })
 
+//task 5
 //@route Delete api/deck
 //@desc Remove all user's decks from global collection
 //@access Private
@@ -210,6 +212,7 @@ router.delete("/", auth, async (req, res) => {
     }
 })
 
+//task 1
 //@route Delete api/deck/:deck_id
 //@desc Remove one user's deck from global collection
 //@access Private
@@ -238,8 +241,55 @@ router.delete("/:deck_id", auth, async(req, res) => {
     }
 })
 
+//task 6
 //@route PATCH api/deck/:deck_id
 //@desc Edit the deck title or description
 //@access Private
+router.patch(
+    "/:deck_id", 
+    [
+        auth,
+        [
+            check('title', "Title is required").not().isEmpty(),
+            check('description', "Description is required").not().isEmpty()
+        ]
+    ], 
+    async(req,res) => {
+    try {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(400).json({ errors: errors.array() });
+        }
+
+        const {
+            title,
+            description
+        } = req.body;
+
+        const deck = await Deck.findById(req.params.deck_id);
+        //check if deck exists
+        if (!deck) {
+            return res.status(404).json({
+                msg: "Deck not found"
+            })
+        }
+        //check if user deleting deck is the deck's creator
+        if (deck.creator.toString() !== req.user.id.toString()) {
+            return res.status(401).json({
+                msg: "User is not authorized to delete deck"
+            })
+        }
+
+        deck.title = title;
+        deck.description = description;
+        deck.save();
+
+        res.json(deck);
+
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send("Server error");
+    }
+})
 
 module.exports = router;

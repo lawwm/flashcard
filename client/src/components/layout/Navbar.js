@@ -7,9 +7,7 @@ import { logout } from "../../actions/auth";
 //Bootstrap
 import Navbar from "react-bootstrap/Navbar";
 import Nav from 'react-bootstrap/Nav';
-import Container from 'react-bootstrap/Container';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
+
 
 
 const NavbarB = ({ auth: { isAuthenticated, loading }, logout }) => {

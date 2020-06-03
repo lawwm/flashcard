@@ -1,8 +1,7 @@
 //Pagination component
-import React, { Fragment, useEffect, useState } from "react";
+import React, { Fragment } from "react";
 import PropTypes from "prop-types";
 import Pagination from 'react-bootstrap/Pagination';
-import PageItem from 'react-bootstrap/PageItem';
 import { connect } from "react-redux";
 import { getPage } from "../../../actions/display";
 
@@ -32,16 +31,27 @@ const Paginate = ({ getPage, currentPage, totalRecords, totalPages, pageArray, l
             {pageArray.map((page, index) => {
                 if (page === LEFT_PAGE)
                 return (
-                  <Pagination.Prev key={index} onClick={handleMoveLeft} />
+                  <Pagination.Prev 
+                    className="page-set" 
+                    key={index} 
+                    onClick={handleMoveLeft} />
                 );
   
               if (page === RIGHT_PAGE)
                 return (
-                  <Pagination.Next key={index} onClick={handleMoveRight} />
+                  <Pagination.Next 
+                    className="page-set" 
+                    key={index} 
+                    onClick={handleMoveRight} />
                 );
   
               return ( //TODO active state for the button
-                <Pagination.Item key={index} onClick={e => handleClick(page, e)} >
+                <Pagination.Item 
+                  className="page-set" 
+                  key={index} 
+                  onClick={e => handleClick(page, e)}
+                  active ={page==currentPage}	
+                >
                     {page}
                 </Pagination.Item>
               );

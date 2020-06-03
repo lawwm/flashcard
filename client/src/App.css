@@ -1,12 +1,27 @@
 /*Alerts*/
+:root {
+  --primary-color: #17a2b8;
+  --dark-color: #343a40;
+  --light-color: #f4f4f4;
+  --danger-color: #dc3545;
+  --success-color: #28a745;
+  --warning-color: #ffc107;
+}
+
 .alert {
     padding: 0.8rem;
-    margin: 1rem 0;
+    margin-left: 5rem;
+    margin-right: 5rem;
     opacity: 0.9;
     background: var(--light-color);
     color: #333;
   }
   
+  .alert-warning {
+    background: var(--warning-color);
+    color: #fff;
+  }
+
   .alert-primary {
     background: var(--primary-color);
     color: #fff;
@@ -59,6 +74,7 @@ a:hover {
   font-size: 1.2rem;
   padding-left: 4rem;
   padding-right: 4rem;
+  margin-bottom: 1rem;
 } 
 
 .nav-logo {
@@ -90,5 +106,177 @@ a:hover {
 
 /* Dashboard */
 .dashboard-header {
+  margin-top: 3rem;
+  font-family: 'Roboto', sans-serif;
+}
+
+.dashboard-deck {
+  text-align: center;
+}
+
+.margin-page {
   margin-top: 1rem;
+}
+
+/* Pagination */
+.page-link {
+  color: black;
+}
+
+.page-set :focus {
+  outline: none ;
+  box-shadow: none ;
+}
+
+.page-set :hover {
+  color: black;
+}
+
+.page-item.active .page-link {
+  background-color: #ffc107 ;
+  border-color: #ffc107 ;
+}
+
+/* Create Form */
+.create-form {
+  margin-top: 3rem;
+  font-family: "Roboto", sans-serif;
+  text-align: center;
+}
+
+/* Display Deck */
+.card-columns {
+  overflow: hidden;
+}
+
+.header-deck-edit {
+  margin: 0px;
+}
+
+.header-deck {
+  height: 63px;
+  padding-top: 12px;
+  padding-bottom: 12px;
+}
+
+.body-deck-edit {
+  height: 200px;
+}
+
+.body-deck {
+  height: 200px;
+}
+
+.dropdown-setting {
+  position: absolute;
+}
+
+/* View Deck */
+.swiper-container {
+  width: 100%;
+  height: 100%;
+  /*this gives the dimension of slider container*/
+  /*these values will make the container as big as the parent div*/
+  overflow: hidden;
+  /*important parameter to not disrupt the container when slides increases in coverflow and other effect*/
+}
+
+.swiper-slide {
+  text-align: center;
+  font-size: 18px;
+  background: none;
+  height:30rem;
+  margin-right: 0px;
+
+  /* Center slide text vertically */
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
+  -webkit-box-pack: center;
+  -ms-flex-pack: center;
+  -webkit-justify-content: center;
+  justify-content: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  -webkit-align-items: center;
+  align-items: center;
+}
+
+/* card */
+/* THE MAINCONTAINER HOLDS EVERYTHING */
+.maincontainer{
+  position: absolute;
+  width: 250px;
+  height: 320px;
+  background: none;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+
+}
+
+/* THE CARD HOLDS THE FRONT AND BACK FACES */
+.thecard{
+  position: relative;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 10px;
+  transform-style: preserve-3d;
+  transition: all 0.8s ease;
+}
+
+/* THE PSUEDO CLASS CONTROLS THE FLIP ON MOUSEOVER AND MOUSEOUT */
+.rotate-card{
+  transform: rotateY(180deg);
+}
+
+/* THE FRONT FACE OF THE CARD, WHICH SHOWS BY DEFAULT */
+ .thefront{
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 10px;
+  backface-visibility: hidden;
+  overflow: hidden;
+  background: #ffc728;
+  color: #000;
+}
+
+/* THE BACK FACE OF THE CARD, WHICH SHOWS ON MOUSEOVER */
+.theback{
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 10px;
+  backface-visibility: hidden;
+  overflow: hidden;
+  background: #fafafa;
+  color: #333;
+  text-align: center;
+  transform: rotateY(180deg);
+}
+
+
+/*This block (starts here) is merely styling for the flip card, and is NOT an essential part of the flip code */
+.thefront h1, .theback h1{
+  font-family: 'zilla slab', sans-serif;
+  padding: 30px;
+  font-weight: bold;
+  font-size: 24px;
+  text-align: center;
+}
+
+.thefront p, .theback p{
+  font-family: 'zilla slab', sans-serif;
+  padding: 30px;
+  font-weight: normal;
+  font-size: 12px;
+  text-align: center;
 }

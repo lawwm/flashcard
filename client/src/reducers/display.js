@@ -5,7 +5,15 @@ import {
     UPDATE_NEIGHBOUR,
     CREATE_DECK,
     CREATE_DECK_FAIL,
-    GET_USER_PAGE
+    GET_USER_PAGE,
+    CREATE_CARD,
+    DECK_ERROR,
+    DELETE_CREATOR_DECK,
+    ADD_DECK,
+    DELETE_USER_DECK,
+    DELETE_ALL_USER_DECK,
+    DELETE_ALL_CREATOR_DECK,
+    UPDATE_DECK
 } from "../actions/types";
 
 const initialState = {
@@ -24,6 +32,16 @@ const initialState = {
 export default function(state=initialState, action) {
     const {type, payload} = action;
     switch(type) {
+        case UPDATE_DECK:
+            let newCurrentDecks = state.currentDecks;
+            newCurrentDecks[payload.index].title = payload.title;
+            newCurrentDecks[payload.index].description = payload.description;
+            return {
+                ...state,
+                currentDecks: [
+                    ...newCurrentDecks
+                ]
+            }
         case GET_PAGE:
         case GET_USER_PAGE:
             return {
@@ -58,7 +76,26 @@ export default function(state=initialState, action) {
                 ...state,
                 createdDeck: true
             }
+        case DELETE_CREATOR_DECK:
+        case DELETE_USER_DECK:
+            return {
+                ...state,
+                currentDecks: state.currentDecks.filter(card => card._id !== payload),
+                totalRecords: state.totalRecords - 1
+            }
+        case DELETE_ALL_USER_DECK:
+            return {
+                ...state,
+                currentDecks: []
+            }
+        case DELETE_ALL_CREATOR_DECK:
+            return {
+                ...state,
+                currentDecks: state.currentDecks.filter(card => card.creator !== payload)
+            }
         case CREATE_DECK_FAIL:
+        case CREATE_CARD:
+        case ADD_DECK:
         default:
             return state;
     }

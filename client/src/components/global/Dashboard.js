@@ -1,33 +1,25 @@
-import React, { Fragment, useEffect } from 'react';
-import Jumbotron from 'react-bootstrap/Jumbotron';
-import Button from 'react-bootstrap/Button';
+import React, { Fragment } from 'react';
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import Spinner from 'react-bootstrap/Spinner';
-import {loadUser} from "../../actions/auth";
 import Display from "./paginationGlobal/Display";
 
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
-
-
 
 const Dashboard =  ({ loading, user, deckCount }) => {
 
   return (
     <Fragment>
-    <Container className="dashboard-header">
-      <Row className="justify-content-center">
+      <Container className="dashboard-header">
+        <Row className="justify-content-center" md={12}>
           <h1>
-            <i class="fas fa-globe-asia"></i> Global: {user && deckCount}
+            <i className="fas fa-globe-asia"></i> Global: {user && deckCount}
           </h1>
-      </Row>
-      <Row>
-      <Display />
-      </Row>
-    </Container>
-
+        </Row>
+        <Row>
+          <Display />
+        </Row>
+      </Container>
     </Fragment>
   )
 }

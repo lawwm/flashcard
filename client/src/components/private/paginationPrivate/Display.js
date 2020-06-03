@@ -1,7 +1,5 @@
 //Main component
-import React, { useState, useEffect } from "react";
-import axios from 'axios';
-import Pagination from 'react-bootstrap/Pagination';
+import React, { useEffect, Fragment } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { getUserPage } from "../../../actions/display";
@@ -9,33 +7,40 @@ import Deck from "./Deck";
 import Limit from "./Limit";
 import Paginate from "./Pagination";
 
+import Col from 'react-bootstrap/Col';
+import CardColumns from 'react-bootstrap/CardColumns';
+
 const Display = ({ currentDecks, getUserPage, limit, neighbour, user_id }) => {
   useEffect(() => { //side effect go to page 1
    getUserPage(1, limit, neighbour, user_id);
-   console.log(user_id);
   }, []);
 
   return (
-    <div>
-      <div>
-        {currentDecks.map((deck, index) => 
-          <Deck 
-            key={index} 
-            title={deck.title} 
-            description={deck.description} 
-            cardCount={deck.cardCount} 
-            deckId={deck.creator}
-            userId={user_id}
-          />
-        )}
-      </div>
-      <div>
+    <Fragment>
+      <Col md={12}>
+        <hr />
+        <CardColumns>
+          {currentDecks.map((deck, index) =>
+            <Deck
+              key={index}
+              title={deck.title}
+              description={deck.description}
+              cardCount={deck.cardCount}
+              deckId={deck._id}
+              creatorId={deck.creator}
+              userId={user_id}
+            />
+          )}
+        </CardColumns>
+        <hr />
+      </Col>
+      <Col className="justify-content-center margin-page" lg={{ span: 7, offset: 1 }}>
         <Paginate />
-      </div>
-      <div>
+      </Col>
+      <Col className="margin-page" lg={4}>
         <Limit />
-      </div>
-    </div>
+      </Col>
+    </Fragment>
   );
 };
 

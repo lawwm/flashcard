@@ -21,7 +21,7 @@ router.get("/:deck_id", auth, async (req, res) => {
                 msg: "Deck not found"
             })
         }
-        res.json(deck.cards);
+        res.json(deck);
     } catch(err) {
         console.error(err.message);
         res.status(500).send("Server Error");

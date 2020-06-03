@@ -7,8 +7,17 @@ import {
     UPDATE_NEIGHBOUR,
     CREATE_DECK,
     CREATE_DECK_FAIL,
-    GET_USER_PAGE
+    GET_USER_PAGE,
+    CREATE_CARD,
+    DELETE_CREATOR_DECK,
+    DECK_ERROR,
+    ADD_DECK, 
+    DELETE_USER_DECK,
+    DELETE_ALL_USER_DECK,
+    DELETE_ALL_CREATOR_DECK,
+    UPDATE_DECK
 } from "./types";
+import { CardTitle } from 'react-bootstrap/Card';
 
 const LEFT_PAGE = "LEFT";
 const RIGHT_PAGE = "RIGHT";
@@ -133,7 +142,6 @@ export const createDeck = (deck) => async dispatch => {
     };
 
     const res = await axios.post('/api/deck', deck, config);
-    console.log(res.data);
     dispatch({
       type: CREATE_DECK,
       payload: res.data
@@ -179,5 +187,167 @@ export const getUserPage = (nowPage, pageLimit, pageNeighbours, userID) => async
           type: PAGINATE_ERROR,
           payload: err
       });
+  }
+}
+
+//Create a new card within the deck
+export const createNewCard = (card, deckId) => async dispatch => {
+  try {
+    const config = {
+      headers: {
+        'Content-Type' : 'application/json'
+      }
+    };
+
+    const res = await axios.post(`/api/card/${deckId}`, card, config);
+
+    dispatch({
+      type: CREATE_CARD,
+      payload: {}
+    })
+    //Set alert for creation of new card?
+    dispatch(setAlert("Card created", "success"));
+
+  } catch (err) {
+    const errors = err.response.data.errors;
+    if (errors) {
+      errors.forEach((error) => dispatch(setAlert(error.msg, "danger")));
+    }
+    dispatch({
+      type: PAGINATE_ERROR,
+      payload: err
+    })
+  }
+}
+
+//Delete a deck from global collection if user is creator
+export const deleteCreatorDeck = (deckId) => async dispatch => {
+  try {
+    await axios.delete(`/api/deck/${deckId}`);
+    dispatch({
+      type: DELETE_CREATOR_DECK,
+      payload: deckId
+    })
+
+    dispatch(setAlert("Deck deleted from global collection", "success"));
+
+  } catch (err) {
+    dispatch({
+      type: DECK_ERROR,
+      payload: { msg: err.response.statusText, status: err.response.status }
+    })
+  }
+} 
+
+//Add deck to personal collection
+export const addDeckUser = (deckId) => async dispatch => {
+  try {
+    await axios.patch(`/api/deck/user/${deckId}`);
+    dispatch({
+      type: ADD_DECK,
+      payload: deckId
+    })
+
+    dispatch(setAlert("Deck added to personal collection", "success"));
+
+  } catch (err) {
+    const errors = err.response.data.errors;
+    if (errors) {
+      errors.forEach((error) => dispatch(setAlert(error.msg, "danger")));
+    }
+    dispatch({
+      type: DECK_ERROR,
+      payload: { msg: err.response.statusText, status: err.response.status }
+    })
+  }
+}
+
+//remove deck from personal collection
+export const deleteUserDeck = (deckId) => async dispatch => {
+  try {
+    await axios.delete(`api/deck/user/${deckId}`);
+    dispatch({
+      type: DELETE_USER_DECK,
+      payload: deckId
+    })
+
+    dispatch(setAlert("Deck has been removed from personal collection", "success"));
+
+  } catch(err) {
+    dispatch({
+      type: DECK_ERROR,
+      payload:  { msg: err.response.statusText, status: err.response.status }
+    })
+  }
+}
+
+//delete all decks from the user's collection
+export const deleteAllUserDeck = () => async dispatch => {
+  if (window.confirm("Are you sure? This can not be undone")) {
+    try {
+      await axios.delete(`/api/deck/user`);
+      dispatch({
+        type: DELETE_ALL_USER_DECK
+      })
+
+      dispatch(setAlert("Your personal collection has been cleared successfully", "success"));
+
+    } catch(err) {
+      dispatch({
+        type: DECK_ERROR,
+        payload: {msg: err.response.statusText, status: err.response.status }
+      })
+    }
+  }
+}
+
+//delete all the creator's decks
+export const deleteAllCreatorDeck = (userId) => async dispatch => {
+  if (window.confirm("Are you sure? This can not be undone")) {
+    try {
+      await axios.delete(`/api/deck`);
+      dispatch({
+        type: DELETE_ALL_CREATOR_DECK,
+        payload: userId
+      })
+
+      dispatch(setAlert("All of your created decks have been deleted", "success"));
+    } catch(err) {
+      dispatch({
+        type: DECK_ERROR,
+        payload: {msg: err.response.statusText, status: err.response.status }
+      })
+    }
+  }
+}
+
+//Edit the decks if you are the creator
+export const updateDeck = (deckId, editDeckValue, index) => async dispatch => {
+  try {
+    const config = {
+      headers: {
+        'Content-Type' : 'application/json'
+      }
+    };
+    const title = editDeckValue.title;
+    const description = editDeckValue.description;
+    const res = await axios.patch(`api/deck/${deckId}`, editDeckValue, config);
+    const payload = {
+      title,
+      description,
+      index
+    };
+    dispatch({
+      type: UPDATE_DECK,
+      payload: payload
+    })
+
+    dispatch(setAlert("Deck has been successfully edited", "success"));
+
+  } catch(err) {
+    dispatch({
+      type: DECK_ERROR,
+      payload:  { msg: err.response.statusText, status: err.response.status }
+    })
   }
 }
